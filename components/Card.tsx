@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
-import { CiClock1 } from "react-icons/ci";
+import { CiClock1,CiHeart } from "react-icons/ci";
 
 function Card() {
   return (
     <div className="bg-white shadow-lg rounded-lg w-80 m-4 overflow-hidden">
-      <div>
+      <div className="relative">
         <Image
           src="/event.jpg"
           alt="event"
@@ -13,6 +13,7 @@ function Card() {
           height={200}
           className="rounded-t-md object-cover"
         />
+        <CiHeart className="absolute p-1 text-2xl top-3 right-3 z-10 bg-white rounded-full" />
       </div>
       {/* info */}
       <div className="p-3">
