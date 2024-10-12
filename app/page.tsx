@@ -1,13 +1,14 @@
 import Card from "@/components/Card";
 import Crousel from "@/components/Crousel";
+import EventDetail from "@/components/EventDetail";
 
 export default function Home() {
   return (
-    <div className="bg-gray-200" >
-      <Crousel/>
+    <div className="" >
+      {/* <Crousel/> */}
 
       {/* for testing purpose  */}
-      <div className=" mt-3 flex justify-center flex-wrap">
+      {/* <div className=" mt-3 flex justify-center flex-wrap">
       <Card/>
       <Card/>
       <Card/>
@@ -18,7 +19,9 @@ export default function Home() {
       <Card/>
       <Card/>
       <Card/>
-      </div>
+      </div> */}
+
+      <EventDetail/>
     
     </div>
   );
