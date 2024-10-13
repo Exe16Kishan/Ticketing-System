@@ -14,3 +14,92 @@ datasource db {
 }
 
 // models
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  role      UserRole
+  events    Event[]  @relation("OrganizerEvents")
+  tickets   Ticket[] @relation("UserTickets")
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Payout    Payout[]
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  location    String
+  date        DateTime
+  organizer   User     @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  organizerId Int
+  ticketTypes Ticket[] @relation("EventTickets")
+  reviews     Review[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Ticket {
+  id            Int          @id @default(autoincrement())
+  type          String
+  price         Float
+  status        TicketStatus @default(AVAILABLE) 
+  qrCode        String
+  event         Event        @relation("EventTickets", fields: [eventId], references: [id])
+  eventId       Int
+  user          User?        @relation("UserTickets", fields: [userId], references: [id])
+  userId        Int?
+  transaction   Transaction  @relation(fields: [transactionId], references: [id])
+  transactionId Int
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model Transaction {
+  id             Int      @id @default(autoincrement())
+  paymentDetails String
+  stripeInfo     String
+  ticket         Ticket[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  Payout         Payout[]
+}
+
+model Payout {
+  id            Int         @id @default(autoincrement())
+  organizer     User        @relation(fields: [organizerId], references: [id])
+  organizerId   Int
+  amount        Float
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  feedback  String?
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// user roles
+enum UserRole {
+  ORGANIZER
+  ATTENDEE
+  ADMIN
+}
+
+// ticket status
+enum TicketStatus {
+  AVAILABLE
+  SOLD
+  CANCELLED
+}
