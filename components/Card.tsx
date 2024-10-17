@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
 import { CiClock1,CiHeart } from "react-icons/ci";
+//todo to create a dynamic route for the link
 
 function Card() {
   return (
-    <div className="bg-white shadow-lg rounded-lg w-80 m-4 overflow-hidden">
+    <div className="bg-white shadow-lg rounded-lg w-72 m-4 overflow-hidden">
       <div className="relative">
         <Image
           src="/event.jpg"

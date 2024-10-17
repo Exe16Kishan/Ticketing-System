@@ -35,6 +35,8 @@ function EventDetail() {
             most beloved bands. Whether you’re a longtime fan or new to their music, 
             this is a night you won’t want to miss</p>
 
+          
+
           {/* Event Guidelines */}
           <div className="mb-6">
             <EventQuidelines />
