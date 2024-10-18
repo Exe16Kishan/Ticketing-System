@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="info gap-y-4">
           <span className="font-bold text-2xl">Information</span>
           <div className="mt-4 flex flex-col">
-            <span>About</span>
+            <span>About</span> 
             <span>Privacy Policy</span>
             <span>Refund Policy</span>
             <span>Terms and conditions</span>
