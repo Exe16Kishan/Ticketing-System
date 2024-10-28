@@ -18,7 +18,7 @@ const Navbar = () => {
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
         <div>
           <h1 className="text-2xl font-bold">
-            <span className="text-[#2f4cf3]">EMS</span>{" "}
+            <span className="text-[#2f4cf3]">Book Event</span>{" "}
           </h1>
         </div>
         <div className="flex items-center gap-12">
@@ -28,9 +28,11 @@ const Navbar = () => {
             <li><Link href='/about'>About</Link></li>
           </ul>
 
+
+    {/* if user not exists */}
           {!user ? (
             <div className="flex items-center gap-2">
-              <Link href="/login"><Button variant="outline">Login</Button></Link>
+              <Link href="/auth/signin"><Button variant="outline">Login</Button></Link>
               <Link href="/signup"><Button className='bg-[#6A38C2] hover:bg-[#5b30a6]'>Sign up</Button></Link>
             </div>
           ) : (

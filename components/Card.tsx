@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
-import { CiClock1,CiHeart } from "react-icons/ci";
+import { CiClock1, CiHeart } from "react-icons/ci";
 //todo to create a dynamic route for the link
 
 function Card() {
@@ -18,7 +18,9 @@ function Card() {
       </div>
       {/* info */}
       <div className="p-3">
-        <h3 className="font-semibold text-lg mb-2">Music Concert & Dance Finale</h3>
+        <h3 className="font-semibold text-lg mb-2">
+          Music Concert & Dance Finale
+        </h3>
         <div className="flex items-center text-gray-600 text-sm gap-1 mb-3">
           <p>Organized by</p>
           <p className="font-medium">The World Organizers</p>
@@ -42,7 +44,7 @@ function Card() {
             <p className="text-gray-500 text-sm">Start from</p>
             <p className="text-lg font-semibold">$18.55</p>
           </div>
-          <button  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+          <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
             Buy Ticket
           </button>
         </div>

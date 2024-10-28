@@ -13,7 +13,7 @@ const Footer = () => {
       <Separator />
       <div className="flex justify-center p-10 gap-x-24">
         <div className="logo my-auto">
-          <span className="text-6xl font-bold text-blue-500">EMS</span>
+          <span className="text-6xl font-bold text-blue-500">Book Event</span>
         </div>
         <div className="info gap-y-4">
           <span className="font-bold text-2xl">Information</span>
