@@ -14,11 +14,55 @@ datasource db {
 }
 
 // models
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+ 
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  role      UserRole
+  id            String @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  password  String
+  role      UserRole?
   events    Event[]  @relation("OrganizerEvents")
   tickets   Ticket[] @relation("UserTickets")
   reviews   Review[]
@@ -28,13 +72,13 @@ model User {
 }
 
 model Event {
-  id          Int      @id @default(autoincrement())
+  id          String @id @default(cuid())
   title       String
   description String
   location    String
   date        DateTime
   organizer   User     @relation("OrganizerEvents", fields: [organizerId], references: [id])
-  organizerId Int
+  organizerId String
   ticketTypes Ticket[] @relation("EventTickets")
   reviews     Review[]
   createdAt   DateTime @default(now())
@@ -42,23 +86,23 @@ model Event {
 }
 
 model Ticket {
-  id            Int          @id @default(autoincrement())
+  id            String @id @default(cuid())
   type          String
   price         Float
-  status        TicketStatus @default(AVAILABLE) 
+  status        TicketStatus @default(AVAILABLE)
   qrCode        String
   event         Event        @relation("EventTickets", fields: [eventId], references: [id])
-  eventId       Int
+  eventId       String
   user          User?        @relation("UserTickets", fields: [userId], references: [id])
-  userId        Int?
+  userId        String?
   transaction   Transaction  @relation(fields: [transactionId], references: [id])
-  transactionId Int
+  transactionId String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }
 
 model Transaction {
-  id             Int      @id @default(autoincrement())
+  id             String @id @default(cuid())
   paymentDetails String
   stripeInfo     String
   ticket         Ticket[]
@@ -68,24 +112,24 @@ model Transaction {
 }
 
 model Payout {
-  id            Int         @id @default(autoincrement())
+  id            String @id @default(cuid())
   organizer     User        @relation(fields: [organizerId], references: [id])
-  organizerId   Int
+  organizerId   String
   amount        Float
   transaction   Transaction @relation(fields: [transactionId], references: [id])
-  transactionId Int
+  transactionId String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
+  id        String @id @default(cuid())
   rating    Int
   feedback  String?
   event     Event    @relation(fields: [eventId], references: [id])
-  eventId   Int
+  eventId   String
   user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
