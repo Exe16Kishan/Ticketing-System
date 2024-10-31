@@ -4,16 +4,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
+import { signUp } from "@/app/actions/signUp"; // Ensure correct import
 
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +24,6 @@ export default function SignUp() {
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
-    // Basic client-side validation
     if (!fullName || !email || !password || !confirmPassword) {
       setError("All fields are required.");
       setIsLoading(false);
@@ -44,12 +37,12 @@ export default function SignUp() {
     }
 
     try {
-      // This is where you would typically make an API call to register the user
-      // For demonstration, we'll just simulate a successful registration
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulate API call
-      console.log("User registered:", { fullName, email });
-      // Instead of using router.push, you might want to show a success message or redirect manually
-      console.log("Registration successful. Redirect to login page.");
+      const result = await signUp(fullName, email, password); // Call server action directly
+      if (result?.success) {
+        console.log("Registration successful. Redirect to login page.");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
     } catch (err) {
       setError("An error occurred during registration. Please try again.");
     } finally {
@@ -61,47 +54,18 @@ export default function SignUp() {
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center">
-            Create an account
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter your details below to create your account and get started
-          </CardDescription>
+          <CardTitle className="text-3xl font-bold text-center">Create an account</CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                name="fullName"
-                placeholder="John Doe"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="prince@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-              />
-            </div>
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input id="fullName" name="fullName" placeholder="John Doe" required />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" name="email" type="email" placeholder="prince@example.com" required />
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" name="password" type="password" required />
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input id="confirmPassword" name="confirmPassword" type="password" required />
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -110,9 +74,7 @@ export default function SignUp() {
           </CardContent>
           <CardFooter>
             <Button className="w-full" type="submit" disabled={isLoading}>
-              {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-              )}
+              {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
               Sign Up
             </Button>
           </CardFooter>
