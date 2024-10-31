@@ -1,10 +1,11 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
+// import { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt"; // Assuming password hashing
 import { prisma } from "../db";
 
 export async function signUp(fullName: string, email: string, password: string) {
+    console.log(email)
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -19,6 +20,6 @@ export async function signUp(fullName: string, email: string, password: string) 
     return { success: true, newUser };
   } catch (error) {
     console.error("Sign-up error:", error);
-    throw new Error("Registration failed. Please try again.");
+    // throw new Error("Registration failed. Please try again.");
   }
 }

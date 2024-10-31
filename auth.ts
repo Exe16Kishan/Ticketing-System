@@ -18,9 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-        let user = null;
-        const { email, password } = await signInSchema.parseAsync(credentials)
-        const hashPassword = await bcrypt.hash(password,10)
+       
         console.log(credentials)
  
         return credentials

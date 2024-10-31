@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
-import { signUp } from "@/app/actions/signUp"; // Ensure correct import
+import { signUp } from "@/app/actions/signUp"; 
 
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export default function SignUp() {
     }
 
     try {
-      const result = await signUp(fullName, email, password); // Call server action directly
+      const result = await signUp(fullName, email, password); // server action
       if (result?.success) {
         console.log("Registration successful. Redirect to login page.");
       } else {
