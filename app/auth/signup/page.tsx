@@ -8,8 +8,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
 import { signUp } from "@/app/actions/signUp"; 
-
+import { useRouter } from "next/navigation";
 export default function SignUp() {
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,6 +41,7 @@ export default function SignUp() {
       const result = await signUp(fullName, email, password); // server action
       if (result?.success) {
         console.log("Registration successful. Redirect to login page.");
+        router.push("/")
       } else {
         setError("Registration failed. Please try again.");
       }

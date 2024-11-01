@@ -26,54 +26,55 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
 
 model User {
-  id            String @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  password  String
-  role      UserRole?
-  events    Event[]  @relation("OrganizerEvents")
-  tickets   Ticket[] @relation("UserTickets")
-  reviews   Review[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Payout    Payout[]
+  password      String
+  role          UserRole?
+  events        Event[]   @relation("OrganizerEvents")
+  tickets       Ticket[]  @relation("UserTickets")
+  reviews       Review[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Payout        Payout[]
+
   @@map("user")
 }
 
 model Event {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String
   location    String
@@ -87,7 +88,7 @@ model Event {
 }
 
 model Ticket {
-  id            String @id @default(cuid())
+  id            String       @id @default(cuid())
   type          String
   price         Float
   status        TicketStatus @default(AVAILABLE)
@@ -103,7 +104,7 @@ model Ticket {
 }
 
 model Transaction {
-  id             String @id @default(cuid())
+  id             String   @id @default(cuid())
   paymentDetails String
   stripeInfo     String
   ticket         Ticket[]
@@ -113,7 +114,7 @@ model Transaction {
 }
 
 model Payout {
-  id            String @id @default(cuid())
+  id            String      @id @default(cuid())
   organizer     User        @relation(fields: [organizerId], references: [id])
   organizerId   String
   amount        Float
@@ -124,7 +125,7 @@ model Payout {
 }
 
 model Review {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   rating    Int
   feedback  String?
   event     Event    @relation(fields: [eventId], references: [id])

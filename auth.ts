@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials"
 import { JWT } from "next-auth/jwt"
 import { signInSchema } from "./lib/zod"
 import bcrypt from "bcrypt"
+import { signVerification } from "./app/actions/signUp"
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -18,10 +19,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-       
-        console.log(credentials)
- 
-        return credentials
+        // fetch credentials
+        const { email, password } = await signInSchema.parseAsync(credentials)
+        // verify the user exists
+        const user = await signVerification(email, password)
+        // if user exits
+        if (user?.success) {
+          console.log("auth ts : "+ user.userExist)
+          return user
+        }
+        // if user dont exits
+        return null
       },
     }),
   ],
