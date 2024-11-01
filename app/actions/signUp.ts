@@ -2,6 +2,8 @@
 
 import bcrypt from "bcrypt"; // Assuming password hashing
 import { prisma } from "../db";
+import { signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
 export async function signUp(fullName: string, email: string, password: string) {
   try {
@@ -22,29 +24,25 @@ export async function signUp(fullName: string, email: string, password: string) 
 }
 
 
+
 // signin verification
 
-export async function signVerification(email: string, password: string) {
-  try {
-    // search for the user
-    const userExist = await prisma.user.findUnique({
-      where: {
-        email
-      }
-    })
-    // if user not found
-    if (!userExist || !userExist.password) {
-      return { success: false }
-    }
-    // compare the hashed pass 
-    const hashedPasswordValidate = bcrypt.compare(password, userExist?.password);
-    // if password not validates
-    if (!hashedPasswordValidate) {
-      return { success: false }
-    }
-    return { success: true , userExist}
+export const signVerfy = async (formdata: FormData) => {
+  const email = formdata.get("email") as string;
+  const password = formdata.get("password") as string;
 
+  try {
+    await signIn("credentials", {
+      redirect:false,
+      redirectTo:"/",
+      email,
+      password,
+    });
   } catch (error) {
-    console.error("Sign-up error:", error);
+    console.error("Sign-in error:", error);
   }
-}
+
+  redirect("/")
+};
+
+

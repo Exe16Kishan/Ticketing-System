@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Popover,
@@ -8,10 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
-//user will come from the auth
-  const user  = false
+  const { data: session, status } = useSession();
 
   return (  
     <div className="bg-white">
@@ -28,30 +29,30 @@ const Navbar = () => {
             <li><Link href='/about'>About</Link></li>
           </ul>
 
-
-    {/* if user not exists */}
-          {!user ? (
+          {/* Check if the user is authenticated */}
+          {status !== "authenticated" ? (
             <div className="flex items-center gap-2">
               <Link href="/auth/signin"><Button variant="outline">Login</Button></Link>
               <Link href="/auth/signup"><Button className='bg-[#6A38C2] hover:bg-[#5b30a6]'>Sign up</Button></Link>
             </div>
           ) : (
+            // Display the user's profile popover
             <Popover>
               <PopoverTrigger>
-                {" "}
                 <Avatar className="cursor-pointer">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src={session.user?.image || "https://github.com/shadcn.png"} />
+                  <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="W-80">
                 <div className="flex gap-3 items-center">
                   <Avatar className="cursor-pointer">
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={session.user?.image || "https://github.com/shadcn.png"} />
                   </Avatar>
                   <div>
-                    <h4 className="font-medium">Fname Lname</h4>
+                    <h4 className="font-medium">{session.user?.name}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur
+                      {session.user?.email}
                     </p>
                   </div>
                 </div>
@@ -62,7 +63,7 @@ const Navbar = () => {
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button variant="link">Log out</Button>
+                    <Button variant="link" onClick={() => signOut()}>Log out</Button>
                   </div>
                 </div>
               </PopoverContent>
