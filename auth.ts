@@ -1,9 +1,9 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { JWT } from "next-auth/jwt"
 import { signInSchema } from "./lib/zod"
 import bcrypt from "bcrypt"
 import { prisma } from "./app/db"
+import { JWT } from "next-auth/jwt"
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -14,11 +14,10 @@ declare module "next-auth/jwt" {
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
       authorize: async (credentials) => {
+        if (!credentials) {
+          return null
+        }
         // fetch credentials
         const { email, password } = await signInSchema.parseAsync(credentials)
         // search for the user
@@ -37,15 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!hashedPasswordValidate) {
           return null
         }
-        // console.log("userExist"+JSON.stringify(userExist))
-        const data = {
-          id : userExist.id,
-          name : userExist.name,
-          email:userExist.email
-        }
-        // console.log(data)
-        // if user dont exits
-        return data
+        return userExist
       },
     }),
   ],
@@ -57,23 +48,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     jwt({ token, user }) {
-      if (user) { // Add user data to the token
-        token.id = user.id ?? '';
-        token.name = user.name ?? '';
-        token.email = user.email ?? '';
-        emailVerified: token.emailVerified instanceof Date ? token.emailVerified : null      }
-      return token;
+      if (user) { 
+        token.id = user.id
+      }
+      return token
     },
     session({ session, token }) {
       if (token.id) {
-        session.user = {
-          id: token.id ?? '',
-          name: token.name ?? '',
-          email: token.email ?? '',
-          emailVerified: token.emailVerified instanceof Date ? token.emailVerified : null
-        };
+
+        session.user.id = token.id
       }
-      return session;
+      return session
     },
   },
 })

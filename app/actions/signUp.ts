@@ -25,24 +25,5 @@ export async function signUp(fullName: string, email: string, password: string) 
 
 
 
-// signin verification
-
-export const signVerfy = async (formdata: FormData) => {
-  const email = formdata.get("email") as string;
-  const password = formdata.get("password") as string;
-
-  try {
-    await signIn("credentials", {
-      redirect:false,
-      redirectTo:"/",
-      email,
-      password,
-    });
-  } catch (error) {
-    console.error("Sign-in error:", error);
-  }
-
-  redirect("/")
-};
 
 
