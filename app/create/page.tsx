@@ -13,31 +13,13 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
+import { useSession } from 'next-auth/react'
+import { formSchema } from '@/lib/zod'
+import { createEvent } from '../actions/userActions'
 
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.',
-  }),
-  description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.',
-  }),
-  location: z.string().min(2, {
-    message: 'Location must be at least 2 characters.',
-  }),
-  date: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
-    message: 'Please enter a valid date and time',
-  }),
-})
-
-async function createEvent(data: z.infer<typeof formSchema>) {
-  
-  
-  // store info in db
-  console.log('Event data:', data)
-  return { message: 'Event created successfully!' }
-}
 
 export default function CreateEventPage() {
+  const session = useSession()
   const router = useRouter()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,18 +31,22 @@ export default function CreateEventPage() {
       description: '',
       location: '',
       date: '',
+      organizerId:session.data?.user?.id  ?? ''
     },
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
     try {
+      
       const result = await createEvent(values)
-      toast({
-        title: 'Success',
-        description: result.message,
-      })
-      router.push('/events') // Redirect to events list page
+      if (result?.success) {
+        toast({
+          title: 'Success',
+          description: result?.message,
+        })
+        router.push('/events') // Redirect to events list page
+      }
     } catch (error) {
       toast({
         title: 'Error',
