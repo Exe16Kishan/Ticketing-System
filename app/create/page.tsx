@@ -1,60 +1,79 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { CalendarIcon, MapPinIcon } from 'lucide-react'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { CalendarIcon, MapPinIcon } from "lucide-react";
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
-import { useSession } from 'next-auth/react'
-import { formSchema } from '@/lib/zod'
-import { createEvent } from '../actions/userActions'
-
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
+import { formSchema } from "@/lib/zod";
+import { createEvent } from "../actions/userActions";
 
 export default function CreateEventPage() {
-  const session = useSession()
-  const router = useRouter()
-  const { toast } = useToast()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const session = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      location: '',
-      date: '',
-      organizerId:session.data?.user?.id  ?? ''
+      title: "",
+      description: "",
+      location: "",
+      date: "",
+      time: "",
+      seats: 20,
+      organizerId: session.data?.user?.id ?? "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      
-      const result = await createEvent(values)
+      const combinedDateTime = new Date(
+        `${values.date}T${values.time}:00Z`
+      ).toISOString();
+      const updatedValues = { ...values, date: combinedDateTime }; // Replace date with full datetime
+
+      const result = await createEvent(updatedValues);
       if (result?.success) {
         toast({
-          title: 'Success',
+          title: "Success",
           description: result?.message,
-        })
-        router.push('/events') // Redirect to events list page
+        });
+        router.push("/events"); // Redirect to events list page
       }
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to create event. Please try again.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to create event. Please try again.",
+        variant: "destructive",
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -63,15 +82,18 @@ export default function CreateEventPage() {
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Create New Event</CardTitle>
-          <CardDescription>Fill in the details to create a new event.</CardDescription>
+          <CardDescription>
+            Fill in the details to create a new event.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Other form fields for title, description, location, etc. */}
               <FormField
                 control={form.control}
                 name="title"
-                render={({ field }:any) => (
+                render={({ field }: any) => (
                   <FormItem>
                     <FormLabel>Event Title</FormLabel>
                     <FormControl>
@@ -87,7 +109,7 @@ export default function CreateEventPage() {
               <FormField
                 control={form.control}
                 name="description"
-                render={({ field }:any) => (
+                render={({ field }: any) => (
                   <FormItem>
                     <FormLabel>Event Description</FormLabel>
                     <FormControl>
@@ -106,14 +128,40 @@ export default function CreateEventPage() {
               />
               <FormField
                 control={form.control}
+                name="seats"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number of Seats</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter the number of seats available"
+                        {...field}
+                        min="20"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Specify how many seats are available for the event.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="location"
-                render={({ field }:any) => (
+                render={({ field }: any) => (
                   <FormItem>
                     <FormLabel>Location</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input className="pl-10" placeholder="Event location" {...field} />
+                        <Input
+                          className="pl-10"
+                          placeholder="Event location"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormDescription>
@@ -123,36 +171,43 @@ export default function CreateEventPage() {
                   </FormItem>
                 )}
               />
+              {/* Date field */}
               <FormField
                 control={form.control}
                 name="date"
-                render={({ field }:any) => (
+                render={({ field }: any) => (
                   <FormItem>
-                    <FormLabel>Date and Time</FormLabel>
+                    <FormLabel>Date</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input
-                          type="datetime-local"
-                          className="pl-10"
-                          {...field}
-                        />
-                      </div>
+                      <Input type="date" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      When will the event take place?
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Time field */}
+              <FormField
+                control={form.control}
+                name="time"
+                render={({ field }: any) => (
+                  <FormItem>
+                    <FormLabel>Time</FormLabel>
+                    <FormControl>
+                      <Input type="time" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create Event'}
+                {isSubmitting ? "Creating..." : "Create Event"}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

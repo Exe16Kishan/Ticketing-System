@@ -21,6 +21,12 @@ export const formSchema = z.object({
   location: z.string().min(2, {
     message: 'Location must be at least 2 characters.',
   }),
-  date: z.string().datetime({ offset:true,message: "Invalid datetime string! Must be UTC." }),
-  organizerId:z.string({message:"organizerId not found"})
-})
+  date: z.string().refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
+    message: 'Date must be in YYYY-MM-DD format.',
+  }),
+  time: z.string().refine((val) => /^\d{2}:\d{2}$/.test(val), {
+    message: 'Time must be in HH:MM format.',
+  }),
+  seats : z.number({message:"must be number"}).int().gte(20,{message:"must be greater than 20"}).lte(300,{message:"not be greater than 300"}),
+  organizerId: z.string({ message: "Organizer ID not found" })
+});
