@@ -90,9 +90,10 @@ function EventDetail() {
           <Separator />
 
           {/* Frequently Asked Questions */}
-          <div>
+          <div className="mb-12">
             <FrequentlyAskedQuestion />
           </div>
+          
         </div>
       </div>
     </div>

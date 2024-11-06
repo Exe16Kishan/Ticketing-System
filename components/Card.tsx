@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
 import { CiClock1, CiHeart } from "react-icons/ci";
+import Link from "next/link";
 //todo to create a dynamic route for the link
 
 function Card() {
@@ -44,9 +45,11 @@ function Card() {
             <p className="text-gray-500 text-sm">Start from</p>
             <p className="text-lg font-semibold">$18.55</p>
           </div>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-            Buy Ticket
-          </button>
+          <Link href="/events/hjsakhd">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+              Buy Ticket
+            </button>
+          </Link>
         </div>
       </div>
     </div>
