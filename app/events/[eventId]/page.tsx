@@ -1,3 +1,4 @@
+
 import EventCasteCard from "@/components/event-caste";
 import EventCaste from "@/components/event-caste";
 import EventQuidelines from "@/components/EventQuidelines";
@@ -8,7 +9,9 @@ import { CiHeart } from "react-icons/ci";
 
 const casteData = [1, 2, 3, 4, 5, 6];
 
-function EventDetail() {
+function  EventDetail() {
+  
+  
   return (
     <div className="bg-gray-200">
       <div

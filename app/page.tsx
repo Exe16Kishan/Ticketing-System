@@ -1,45 +1,45 @@
-import Card from "@/components/Card";
+"use client";
+import React, { useEffect, useState } from "react";
 import Crousel from "@/components/Crousel";
-import EventDetail from "@/components/EventDetail";
-import FeaturedHomeEvent from "@/components/Featured-Home-Event";
-import FeatureOrganiser from "@/components/Feature-Organiser";
 import { Separator } from "@/components/ui/separator";
 import HomePageCoursel from "@/components/Home-Page-Coursel";
-import Footer from "@/components/shared/Footer";
+import { Event } from "@/types";
+import { dataFetch } from "@/app/actions/dataFetching";
+
 export default function Home() {
+
+  const [events, setEvents] = useState<Event[] | undefined>();
+
+  const fetchData = async () => {
+    const data = await dataFetch();
+    setEvents(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
   return (
     <>
-      <Crousel/>
+      <Crousel />
       <div className="max-w-7xl mx-auto my-20">
-        {/* <div className="hero flex gap-4 justify-around ">
-          <div className="flex-1/3">
-            <FeatureOrganiser />
-          </div> 
-
-          <div className="flex-2/3">
-            <FeaturedHomeEvent />
-          </div>
-        </div> */}
+        {/* Optional components */}
         <div className="Music">
-          <h1 className="font-bold text-3xl text-blue-700 my-4">Music And Consert</h1>
+          <h1 className="font-bold text-3xl text-blue-700 my-4">Music And Concert</h1>
           <Separator />
-          <HomePageCoursel />
+          <HomePageCoursel events={events} />
         </div>
         <div className="Music">
           <h1 className="font-bold text-3xl text-blue-700 my-4">Art And Culture</h1>
           <Separator />
-          <HomePageCoursel />
+          <HomePageCoursel events={events} />
         </div>
         <div className="Music">
           <h1 className="font-bold text-3xl text-blue-700 my-4">Seminars And Hackathons</h1>
           <Separator />
-          <HomePageCoursel />
+          <HomePageCoursel events={events} />
         </div>
-
-
       </div>
-     
-      
     </>
   );
 }

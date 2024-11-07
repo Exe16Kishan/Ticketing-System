@@ -2,9 +2,13 @@ import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
 import { CiClock1, CiHeart } from "react-icons/ci";
 import Link from "next/link";
-//todo to create a dynamic route for the link
+import { Event } from "@/types";
+interface CardProps {
+  eventDetail: Event;
+}
 
-function Card() {
+function Card({eventDetail}:CardProps) {
+  console.log("in card component"+ JSON.stringify(eventDetail))
   return (
     <div className="bg-white shadow-lg rounded-lg w-72 m-4 overflow-hidden">
       <div className="relative">
@@ -20,23 +24,23 @@ function Card() {
       {/* info */}
       <div className="p-3">
         <h3 className="font-semibold text-lg mb-2">
-          Music Concert & Dance Finale
+          {eventDetail.title}
         </h3>
         <div className="flex items-center text-gray-600 text-sm gap-1 mb-3">
           <p>Organized by</p>
-          <p className="font-medium">The World Organizers</p>
+          <p className="font-medium">{eventDetail.organizer?.name || "unknown organizer"}</p>
         </div>
         <div className="text-sm text-gray-600 mb-4">
           {/* date and address */}
           <div className="flex items-center gap-2 mb-2">
             <SlCalender className="text-xl" />
             <p>11 June 2023</p>
-            <p className="ml-auto">-129 Swan Avenue, Boston, LA</p>
+            <p className="ml-auto">-{eventDetail.location}</p>
           </div>
           {/* time */}
           <div className="flex items-center gap-2">
             <CiClock1 className="text-xl" />
-            <p>05:00 PM</p>
+            <p>{eventDetail.time}</p>
           </div>
         </div>
         {/* price and buying */}
@@ -45,7 +49,7 @@ function Card() {
             <p className="text-gray-500 text-sm">Start from</p>
             <p className="text-lg font-semibold">$18.55</p>
           </div>
-          <Link href="/events/hjsakhd">
+          <Link href={`/events/${eventDetail.id}`}>
             <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
               Buy Ticket
             </button>
