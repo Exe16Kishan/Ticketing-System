@@ -28,5 +28,6 @@ export const formSchema = z.object({
     message: 'Time must be in HH:MM format.',
   }),
   seats : z.number({message:"must be number"}).int().gte(20,{message:"must be greater than 20"}).lte(300,{message:"not be greater than 300"}),
+  type: z.enum(["MUSIC", "CONCERT", "ART", "CULTURE", "HACKATHON", "SEMINAR"]),
   organizerId: z.string({ message: "Organizer ID not found" })
 });

@@ -45,6 +45,7 @@ export default function CreateEventPage() {
       location: "",
       date: "",
       time: "",
+      type: "MUSIC",
       seats: 20,
       organizerId: session.data?.user?.id ?? "",
     },
@@ -64,7 +65,7 @@ export default function CreateEventPage() {
           title: "Success",
           description: result?.message,
         });
-        router.push("/events"); // Redirect to events list page
+        router.push("/"); // Redirect to events main page
       }
     } catch (error) {
       toast({
@@ -171,6 +172,33 @@ export default function CreateEventPage() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Type</FormLabel>
+                    <FormControl>
+                      <select
+                        className="w-full border p-2 rounded-md"
+                        {...field}
+                      >
+                        <option value="MUSIC">Music</option>
+                        <option value="CONCERT">Concert</option>
+                        <option value="ART">Art</option>
+                        <option value="CULTURE">Culture</option>
+                        <option value="HACKATHON">Hackathon</option>
+                        <option value="SEMINAR">Seminar</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                    <FormDescription>
+                      choose the type of event
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
+
               {/* Date field */}
               <FormField
                 control={form.control}

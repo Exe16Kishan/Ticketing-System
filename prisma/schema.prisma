@@ -74,19 +74,20 @@ model User {
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
+  type        EventType
   description String
   location    String
   seat        Int
   date        DateTime // Stores the full date with time, to combine date and time in your code logic
   time        String // Stores only time in HH:MM format
-  organizer   User     @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  organizer   User      @relation("OrganizerEvents", fields: [organizerId], references: [id])
   organizerId String
-  ticketTypes Ticket[] @relation("EventTickets")
+  ticketTypes Ticket[]  @relation("EventTickets")
   reviews     Review[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Ticket {
@@ -150,4 +151,14 @@ enum TicketStatus {
   AVAILABLE
   SOLD
   CANCELLED
+}
+
+// event type
+enum EventType {
+  MUSIC
+  CONCERT
+  ART
+  CULTURE
+  HACKATHON
+  SEMINAR
 }
