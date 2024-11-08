@@ -27,7 +27,13 @@ export const formSchema = z.object({
   time: z.string().refine((val) => /^\d{2}:\d{2}$/.test(val), {
     message: 'Time must be in HH:MM format.',
   }),
-  seats : z.number({message:"must be number"}).int().gte(20,{message:"must be greater than 20"}).lte(300,{message:"not be greater than 300"}),
-  type: z.enum(["MUSIC", "CONCERT", "ART", "CULTURE", "HACKATHON", "SEMINAR"]),
+  seats: z.preprocess(
+    (value) => (value ? Number(value) : undefined),  // Convert to number
+    z.number()
+      .min(1, "Seats must be at least 1")
+      .max(100, "Seats can't exceed 100")
+      .int("Seats must be an integer")
+  ),
+    type: z.enum(["MUSIC", "CONCERT", "ART", "CULTURE", "HACKATHON", "SEMINAR"]),
   organizerId: z.string({ message: "Organizer ID not found" })
 });

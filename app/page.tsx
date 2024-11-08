@@ -27,17 +27,17 @@ export default function Home() {
         <div className="Music">
           <h1 className="font-bold text-3xl text-blue-700 my-4">Music And Concert</h1>
           <Separator />
-          <HomePageCoursel events={events} />
+          <HomePageCoursel events={events?.filter(event=>event.type == "MUSIC" || event.type == "CONCERT")} />
         </div>
         <div className="Music">
           <h1 className="font-bold text-3xl text-blue-700 my-4">Art And Culture</h1>
           <Separator />
-          <HomePageCoursel events={events} />
+          <HomePageCoursel events={events?.filter(event=>event.type == "ART" || event.type == "CULTURE")} />
         </div>
         <div className="Music">
           <h1 className="font-bold text-3xl text-blue-700 my-4">Seminars And Hackathons</h1>
           <Separator />
-          <HomePageCoursel events={events} />
+          <HomePageCoursel events={events?.filter(event=>event.type == "HACKATHON" || event.type == "SEMINAR")} />
         </div>
       </div>
     </>

@@ -7,7 +7,6 @@ import Link from "next/link";
 const About = () => {
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-12">
-      {/* About Header */}
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-blue-700">About Our Event Management System</h1>
         <Separator className="my-4" />
@@ -16,7 +15,6 @@ const About = () => {
         </p>
       </div>
 
-      {/* Features Section */}
       <section className="space-y-8">
         <h2 className="text-3xl font-semibold text-gray-800">Key Features</h2>
         <Separator />
@@ -69,7 +67,6 @@ const About = () => {
         </ul>
       </section>
 
-      {/* Call to Action */}
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-semibold text-blue-700">Ready to Dive In?</h2>
         <p className="text-gray-600">Join us today and explore events that inspire, entertain, and educate.</p>

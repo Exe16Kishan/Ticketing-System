@@ -26,7 +26,7 @@ const EventFilter = () => {
         </div>
         
         {/* price*/}
-        <div>
+        {/* <div>
           <label className="block font-bold mb-1">Price</label>
           <select
             value={price}
@@ -38,7 +38,7 @@ const EventFilter = () => {
             <option value="50-100">$50 - $100</option>
             <option value="100+">$100+</option>
           </select>
-        </div>
+        </div> */}
         
         {/* date*/}
         <div>
@@ -60,13 +60,16 @@ const EventFilter = () => {
             className="border p-2 rounded-md"
           >
             <option value="">Select Type</option>
-            <option value="concert">Concert</option>
-            <option value="festival">Festival</option>
-            <option value="party">Party</option>
+            <option value="concert">CONCERT</option>
+            <option value="art">ART</option>
+            <option value="culture">CULTURE</option>
+            <option value="music">MUSIC</option>
+            <option value="seminar">SEMINAR</option>
+            <option value="hackathon">HACKATHON</option>
           </select>
         </div>
         
-        {/* organizer */}
+        {/* organizer
         <div>
           <label className="block font-bold mb-1">Organizer</label>
           <select
@@ -79,7 +82,8 @@ const EventFilter = () => {
             <option value="org2">Organizer 2</option>
           </select>
         </div>
-        
+         */}
+
         {/* search */}
         <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
           Search Events

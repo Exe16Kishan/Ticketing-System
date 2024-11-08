@@ -3,6 +3,7 @@ export interface Event {
     title: string;
     description: string;
     location: string;
+    type: 'MUSIC' | 'CONCERT' | 'ART' | 'CULTURE' | 'HACKATHON' | 'SEMINAR';
     seat: number;
     date: Date;
     time: string;
