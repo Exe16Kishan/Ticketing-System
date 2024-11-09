@@ -1,6 +1,6 @@
 import EventFilter from "./EventFilter";
 
-function Crousel() {
+function Crousel({filterEvent}:{ filterEvent: Function }) {
   return (
     <>
       <div className="relative">
@@ -11,7 +11,7 @@ function Crousel() {
         />
         {/* Event filter position */}
         <div className="absolute inset-0 top-96 flex justify-center items-center z-10">
-          <EventFilter />
+          <EventFilter filterEvent={filterEvent}/>
         </div>
       </div>
       

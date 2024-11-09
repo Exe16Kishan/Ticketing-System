@@ -45,6 +45,7 @@ export default function CreateEventPage() {
       location: "",
       date: "",
       time: "",
+      price:0,
       type: "MUSIC",
       seats: 20,
       organizerId: session.data?.user?.id ?? "",
@@ -197,6 +198,27 @@ export default function CreateEventPage() {
                     </FormDescription>
                   </FormItem>
                 )}
+              />
+              <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ticket Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter the price of event"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Specify the price of the Ticket.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+              
               />
 
               {/* Date field */}

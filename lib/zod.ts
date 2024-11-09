@@ -34,6 +34,11 @@ export const formSchema = z.object({
       .max(100, "Seats can't exceed 100")
       .int("Seats must be an integer")
   ),
+  price: z.preprocess(
+    (value) => (value ? Number(value) : undefined),  // Convert to number
+    z.number()
+      .int("Seats must be an integer")
+  ),
     type: z.enum(["MUSIC", "CONCERT", "ART", "CULTURE", "HACKATHON", "SEMINAR"]),
   organizerId: z.string({ message: "Organizer ID not found" })
 });

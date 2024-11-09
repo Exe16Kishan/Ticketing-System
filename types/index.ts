@@ -5,6 +5,7 @@ export interface Event {
     location: string;
     type: 'MUSIC' | 'CONCERT' | 'ART' | 'CULTURE' | 'HACKATHON' | 'SEMINAR';
     seat: number;
+    price: number;
     date: Date;
     time: string;
     organizerId: string;

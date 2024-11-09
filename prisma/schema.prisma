@@ -80,6 +80,7 @@ model Event {
   description String
   location    String
   seat        Int
+  price       Int
   date        DateTime // Stores the full date with time, to combine date and time in your code logic
   time        String // Stores only time in HH:MM format
   organizer   User      @relation("OrganizerEvents", fields: [organizerId], references: [id])
