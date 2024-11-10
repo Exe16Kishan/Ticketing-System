@@ -273,7 +273,7 @@ export default function CreateEventPage() {
               />
 
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Event"}
+                {isSubmitting ? "Saving details..." : "Next ->"}
               </Button>
             </form>
           </Form>

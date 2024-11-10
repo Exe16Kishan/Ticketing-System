@@ -131,14 +131,14 @@ export default function MultiPerformerForm() {
               type="button"
               variant="outline"
               size="sm"
-              className="mt-2"
+              className="mt-2 space-x-10"
               onClick={() => append({ performName: "", occupation: "",eventId:eventId.toString() || "" ,image:"" })}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
               Add
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit All Performers"}
+              {isSubmitting ? "Submitting..." : "Create Event"}
             </Button>
           </form>
         </Form>
