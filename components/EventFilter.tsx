@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const EventFilter = ({filterEvent}:{ filterEvent: Function }) => {
+const EventFilter = ({ filterEvent }: { filterEvent: Function }) => {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [type, setType] = useState("");
@@ -52,7 +52,10 @@ const EventFilter = ({filterEvent}:{ filterEvent: Function }) => {
         </div>
 
         {/* search */}
-        <button onClick={()=> filterEvent({location,type,date})} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+        <button
+          onClick={() => filterEvent({ location, type, date })}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        >
           Search Events
         </button>
       </div>

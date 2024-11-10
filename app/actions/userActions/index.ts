@@ -9,7 +9,7 @@ export const createEvent = async (data: z.infer<typeof formSchema>) => {
     if (!data) {
         return null
     }
-    const { title, description, location, date, time, seats, type,organizerId } = data;
+    const { title, description, location, date, time, seats, type,organizerId,price } = data;
     try {
         const newEvent = await prisma.event.create({
             data: {
@@ -20,7 +20,8 @@ export const createEvent = async (data: z.infer<typeof formSchema>) => {
                 time,
                 type,
                 seat: seats,
-                organizerId
+                organizerId,
+                price
 
             }
         })
