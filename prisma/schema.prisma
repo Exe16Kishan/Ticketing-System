@@ -74,21 +74,23 @@ model User {
 }
 
 model Event {
-  id          String    @id @default(cuid())
-  title       String
-  type        EventType
-  description String
-  location    String
-  seat        Int
-  price       Int
-  date        DateTime // Stores the full date with time, to combine date and time in your code logic
-  time        String // Stores only time in HH:MM format
-  organizer   User      @relation("OrganizerEvents", fields: [organizerId], references: [id])
-  organizerId String
-  ticketTypes Ticket[]  @relation("EventTickets")
-  reviews     Review[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  title             String
+  type              EventType
+  description       String
+  detailDescription String
+  location          String
+  seat              Int
+  price             Int
+  date              DateTime // Stores the full date with time
+  time              String
+  caste             Caste[]
+  organizer         User      @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  organizerId       String
+  ticketTypes       Ticket[]  @relation("EventTickets")
+  reviews           Review[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Ticket {
@@ -138,6 +140,17 @@ model Review {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Caste {
+  id          String   @id @default(cuid())
+  image       String
+  performName String
+  occupation  String
+  Event       Event?   @relation(fields: [eventId], references: [id])
+  eventId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // user roles

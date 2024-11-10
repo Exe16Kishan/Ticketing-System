@@ -42,6 +42,7 @@ export default function CreateEventPage() {
     defaultValues: {
       title: "",
       description: "",
+      detailDescription: "",
       location: "",
       date: "",
       time: "",
@@ -66,7 +67,7 @@ export default function CreateEventPage() {
           title: "Success",
           description: result?.message,
         });
-        router.push("/"); // Redirect to events main page
+        router.push(`/caste/${result.eventid}`); // Redirect to events main page
       }
     } catch (error) {
       toast({
@@ -123,6 +124,26 @@ export default function CreateEventPage() {
                     </FormControl>
                     <FormDescription>
                       Provide details about your event.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="detailDescription"
+                render={({ field }: any) => (
+                  <FormItem>
+                    <FormLabel>Detail Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe your event"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Provide detail description about your event.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

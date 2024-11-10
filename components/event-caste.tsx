@@ -2,13 +2,18 @@ import React from "react";
 import { CiClock1, CiHeart } from "react-icons/ci";
 import Image from "next/image";
 
-const EventCasteCard = () => {
+interface Caste {
+  i:{performName: string;
+    occupation: string;
+    image: string;}
+}
+const EventCasteCard = ({i}:Caste) => {
   return (
     <div className="h-48 w-48">
       <div className="flex flex-col">
         <div className="relative">
           <Image
-            src="/event.jpg"
+            src="/dp.png"
             alt="event"
             width={400}
             height={200}
@@ -19,8 +24,8 @@ const EventCasteCard = () => {
         {/* info */}
         <div className="p-3 text-center">
           <div className="mb-2">
-            <span className="font-semibold text-lg">Performer Name</span>
-            <p className="font-xs text-gray-500">Profession</p>
+            <span className="font-semibold text-lg">{i.performName}</span>
+            <p className="font-xs text-gray-500">{i.occupation}</p>
           </div>
         </div>
       </div>

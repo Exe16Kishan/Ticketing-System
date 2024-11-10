@@ -47,7 +47,7 @@ function Card({eventDetail}:CardProps) {
         <div className="flex justify-between items-center px-1 my-3">
           <div className="flex flex-col">
             <p className="text-gray-500 text-sm">Start from</p>
-            <p className="text-lg font-semibold">$18.55</p>
+            <p className="text-lg font-semibold">Rs {eventDetail.price}</p>
           </div>
           <Link href={`/events/${eventDetail.id}`}>
             <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">

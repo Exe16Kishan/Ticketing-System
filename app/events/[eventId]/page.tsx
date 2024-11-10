@@ -1,4 +1,5 @@
 
+import { prisma } from "@/app/db";
 import EventCasteCard from "@/components/event-caste";
 import EventCaste from "@/components/event-caste";
 import EventQuidelines from "@/components/EventQuidelines";
@@ -7,10 +8,26 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { CiHeart } from "react-icons/ci";
 
-const casteData = [1, 2, 3, 4, 5, 6];
-
-function  EventDetail() {
-  
+async function  EventDetail({params}:any) {
+  const eventDetail = await prisma.event.findUnique({
+    where:{
+      id:params.eventId
+    },
+    include:{
+      organizer:{
+        select:{
+          name:true
+        }
+      },
+      caste:{
+        select:{
+          performName:true,
+          occupation:true,
+          image:true
+        }
+      }
+    }
+  })
   
   return (
     <div className="bg-gray-200">
@@ -18,10 +35,10 @@ function  EventDetail() {
         className="relative bg-cover bg-center bg-no-repeat w-full h-[66vh] mb-10"
         style={{ backgroundImage: `url('/event.jpg')` }}
       >
-        {/* Optional overlay for better readability */}
+        {/*overlay for better readability */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
 
-        {/* Components centered inside the background */}
+        {/* Components centered*/}
         <div className="relative z-10 flex justify-center items-center h-full max-w-7xl mx-auto px-4 gap-5">
           {/* Left part - 1/3 width */}
           <div className="flex flex-col justify-center items-start space-y-4">
@@ -35,9 +52,9 @@ function  EventDetail() {
 
           {/* Right part - 2/3 width */}
           <div className="flex flex-col justify-center items-start space-y-4">
-            <h1 className="text-white text-4xl font-bold">The Imagin Dradon Show</h1>
+            <h1 className="text-white text-4xl font-bold">{eventDetail?.title}</h1>
             <p className="text-white">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptate praesentium, assumenda sapiente nisi ipsa.
+          {eventDetail?.description}
             </p>
             <button className="mt-8 bg-blue-500 text-white px-4 py-2 rounded">
               Buy Tickets
@@ -50,23 +67,14 @@ function  EventDetail() {
       <div className="flex justify-center ">
         <div className="w-full max-w-5xl bg-gray-100 p-3 rounded-t-lg">
           <h1 className="text-3xl font-bold mb-2 text-gray-800">
-            An Imaginary Night with Imagine Dragons in LA
+            {eventDetail?.title}
           </h1>
           <div className="flex items-center gap-2 mb-4">
             <p className="text-gray-600">by</p>
-            <p className="text-blue-700 font-semibold">The World Organizer</p>
+            <p className="text-blue-700 font-semibold">{eventDetail?.organizer.name}</p>
           </div>
           <p className="text-gray-700 mb-6">
-            Join us for an unforgettable evening with Imagine Dragons at one of
-            Los Angeles' most iconic venues. Immerse yourself in an electrifying
-            atmosphere as the band performs their biggest hits and latest
-            tracks, all set against a backdrop of dazzling lights and incredible
-            visuals. This is more than just a concert—it's an experience that
-            will leave you singing and dancing all night long. Expect an
-            exhilarating performance filled with powerful vocals, energetic
-            beats, and the signature anthems that have made Imagine Dragons one
-            of the world’s most beloved bands. Whether you’re a longtime fan or
-            new to their music, this is a night you won’t want to miss
+            {eventDetail?.detailDescription}
           </p>
 
           <Separator />
@@ -83,9 +91,9 @@ function  EventDetail() {
             <div className="grid grid-cols-5 gap-4 mx-4">
               {" "}
               {/* Use grid with 3 columns */}
-              {casteData.map((item, index) => (
+              {eventDetail?.caste.map((item, index) => (
                 <div key={index}>
-                  <EventCasteCard />
+                  <EventCasteCard i={item}/>
                 </div>
               ))}
             </div>
