@@ -8,7 +8,6 @@ interface CardProps {
 }
 
 function Card({eventDetail}:CardProps) {
-  console.log("in card component"+ JSON.stringify(eventDetail))
   return (
     <div className="bg-white shadow-lg rounded-lg w-72 m-4 overflow-hidden">
       <div className="relative">

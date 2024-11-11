@@ -17,7 +17,7 @@ const HomePageCoursel = ({events}:data) => {
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: "center",
       }}
       className="w-full"
     >
