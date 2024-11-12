@@ -13,14 +13,12 @@ export interface Event {
     organizer: {
       name:string | null;
     };
+    caste:{
+      performName: string; 
+    occupation: string ; 
+    eventId : string | null;
+    image:string | null;
+    }[]
     createdAt: Date;
     updatedAt: Date;
-  }
-
-
-  export interface Caste {
-    performName: string; 
-    occupation: string ; 
-    eventId : string;
-    image:string
   }

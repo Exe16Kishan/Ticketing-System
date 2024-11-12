@@ -10,6 +10,14 @@ export const dataFetch = async () => {
                     select:{
                         name:true
                     }
+                },
+                caste:{
+                    select:{
+                        performName:true,
+                        occupation:true,
+                        eventId:true,
+                        image:true
+                    }
                 }
             }
         });

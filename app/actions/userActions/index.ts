@@ -9,7 +9,7 @@ export const createEvent = async (data: z.infer<typeof formSchema>) => {
     if (!data) {
         return null
     }
-    const { title, description, location, date, time, seats, type,organizerId,price ,detailDescription} = data;
+    const { title, description, location, date, time,performers, seats, type,organizerId,price ,detailDescription} = data;
     try {
         const newEvent = await prisma.event.create({
             data: {
@@ -22,11 +22,17 @@ export const createEvent = async (data: z.infer<typeof formSchema>) => {
                 type,
                 seat: seats,
                 organizerId,
-                price
+                price,
+                caste:{
+                    createMany:{
+                        data: performers,
+                    }
+                }
 
             }
         })
-        return { success: true, message: 'Event created successfully!',eventid:newEvent.id }
+        console.log(newEvent)
+        return { success: true, message: 'Event created successfully!'}
     } catch (error) {
         return { success: false ,message :'event not created'}
 

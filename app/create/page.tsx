@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { formSchema } from "@/lib/zod";
 import { createEvent } from "../actions/userActions";
+import { PerformerInput } from "@/components/PerformerInput";
 
 export default function CreateEventPage() {
   const session = useSession();
@@ -46,14 +47,16 @@ export default function CreateEventPage() {
       location: "",
       date: "",
       time: "",
-      price:0,
+      price: 0,
       type: "MUSIC",
       seats: 20,
+      performers: [],
       organizerId: session.data?.user?.id ?? "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
     setIsSubmitting(true);
     try {
       const combinedDateTime = new Date(
@@ -67,7 +70,7 @@ export default function CreateEventPage() {
           title: "Success",
           description: result?.message,
         });
-        router.push(`/caste/${result.eventid}`); // Redirect to events main page
+        router.push("/"); // Redirect to events main page
       }
     } catch (error) {
       toast({
@@ -77,6 +80,11 @@ export default function CreateEventPage() {
       });
     } finally {
       setIsSubmitting(false);
+      toast({
+        title: "Error",
+        description: "Failed to create event. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -214,32 +222,29 @@ export default function CreateEventPage() {
                       </select>
                     </FormControl>
                     <FormMessage />
-                    <FormDescription>
-                      choose the type of event
-                    </FormDescription>
+                    <FormDescription>choose the type of event</FormDescription>
                   </FormItem>
                 )}
               />
               <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ticket Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter the price of event"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Specify the price of the Ticket.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-              
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ticket Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter the price of event"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Specify the price of the Ticket.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               {/* Date field */}
@@ -271,9 +276,20 @@ export default function CreateEventPage() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="performers"
+                render={({ field }: any) => (
+                  <FormItem>
+                    <FormLabel>Performers</FormLabel>
+                    <PerformerInput {...field} /> {/* Pass field props here */}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving details..." : "Next ->"}
+                {isSubmitting ? "creating event..." : "create"}
               </Button>
             </form>
           </Form>
