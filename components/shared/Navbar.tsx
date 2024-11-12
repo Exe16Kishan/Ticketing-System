@@ -15,30 +15,26 @@ const Navbar = () => {
   const { data: session, status } = useSession();
 
   return (
-    <div className="bg-white">
-      <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
+    <div className="bg-white shadow-md">
+      <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-4 sm:px-6 lg:px-8">
         <div>
-          <h1 className="text-2xl font-bold">
-            <span className="text-[#2f4cf3]">Book Event</span>{" "}
+          <h1 className="text-xl sm:text-2xl font-bold">
+            <span className="text-[#2f4cf3]">Book Event</span>
           </h1>
         </div>
-        <div className="flex items-center gap-12">
-          <ul className="flex font-medium items-center gap-5">
+        <div className="flex items-center gap-6 lg:gap-12">
+          <ul className="hidden sm:flex font-medium items-center gap-4 lg:gap-5">
             <li>
               <Link href="/">Home</Link>
             </li>
-            {/* <li>
-              <Link href="/events">Events</Link>
-            </li> */}
             <li>
               <Link href="/about">About</Link>
             </li>
-            {
-              status == "authenticated" &&
+            {status == "authenticated" && (
               <li>
-              <Link href="/create">Create</Link>
-            </li>
-            }
+                <Link href="/create">Create</Link>
+              </li>
+            )}
           </ul>
 
           {/* Check if the user is authenticated */}
@@ -56,10 +52,6 @@ const Navbar = () => {
           ) : (
             // Display the user's profile popover
             <Popover>
-              {/* <Link href="/createevent">
-                <Button variant="outline">Create</Button>
-              </Link> */}
-
               <PopoverTrigger>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
@@ -70,7 +62,7 @@ const Navbar = () => {
                   </AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
-              <PopoverContent className="W-80">
+              <PopoverContent className="w-64 sm:w-80">
                 <div className="flex gap-3 items-center">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
@@ -86,7 +78,7 @@ const Navbar = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col text-gray-300 my-2">
+                <div className="flex flex-col text-gray-500 my-2">
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <User />
                     <Button variant="link">
@@ -95,7 +87,7 @@ const Navbar = () => {
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button variant="link" onClick={() => signOut({redirectTo:"/"})}>
+                    <Button variant="link" onClick={() => signOut({ redirectTo: "/" })}>
                       Log out
                     </Button>
                   </div>
