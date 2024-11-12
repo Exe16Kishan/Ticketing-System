@@ -282,7 +282,7 @@ export default function CreateEventPage() {
                 render={({ field }: any) => (
                   <FormItem>
                     <FormLabel>Performers</FormLabel>
-                    <PerformerInput {...field} /> {/* Pass field props here */}
+                    <PerformerInput {...field} />
                     <FormMessage />
                   </FormItem>
                 )}
