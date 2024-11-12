@@ -2,9 +2,28 @@
 
 import { prisma } from "@/app/db"
 
-export const Events = async() => {
-    
-      const data = await prisma.event.findMany()
-      return data 
-    
+export const eventDetail = async (id:string) => {
+      const eventDetail = await prisma.event.findUnique({
+            where:{
+              id
+            },
+            include:{
+              organizer:{
+                select:{
+                  name:true
+                }
+              },
+              caste:{
+                select:{
+                  performName:true,
+                  occupation:true,
+                  image:true
+                }
+              }
+            }
+          })
+
+      return {success : true , eventDetail}
 }
+
+

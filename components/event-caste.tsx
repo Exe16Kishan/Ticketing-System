@@ -5,7 +5,8 @@ import Image from "next/image";
 interface Caste {
   i:{performName: string;
     occupation: string;
-    image: string;}
+    image: string | null;
+  }
 }
 const EventCasteCard = ({i}:Caste) => {
   return (

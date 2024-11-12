@@ -33,7 +33,7 @@ function Card({eventDetail}:CardProps) {
           {/* date and address */}
           <div className="flex items-center gap-2 mb-2">
             <SlCalender className="text-xl" />
-            <p>{eventDetail.date.getUTCDate()+"-"+eventDetail.date.getMonth()+"-"+eventDetail.date.getFullYear()}</p>
+            <p>{eventDetail.date.toDateString()}</p>
             <p className="ml-auto">-{eventDetail.location}</p>
           </div>
           {/* time */}
