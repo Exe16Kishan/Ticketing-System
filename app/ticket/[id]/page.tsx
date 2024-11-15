@@ -33,7 +33,7 @@ export default function TicketPage({ params }:any ) {
       const data=await ticketdata(params.id) 
       if (data?.success) {
         setTicketData(data.ticket)
-      setqrCodeUrl(data.qrCodeUrl)
+        setqrCodeUrl(data.qrCodeUrl)
       }
     }
 

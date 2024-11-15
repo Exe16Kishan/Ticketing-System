@@ -1,5 +1,4 @@
 "use client";
-import { createBooking } from "@/app/actions/bookTicket";
 import { eventDetail } from "@/app/actions/events";
 import EventCasteCard from "@/components/event-caste";
 import EventQuidelines from "@/components/EventQuidelines";
@@ -11,12 +10,63 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Script from 'next/script'
+import { createOrder, verifyPayment } from "@/app/actions/payment";
+import { createBooking } from "@/app/actions/bookTicket";
+
+interface PaymentResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+
 
 function EventDetail({ params }: any) {
   const session = useSession();
   const router = useRouter()
   const [eventData, setEventData] = useState<Event | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null)
+
+
+  const handlePayment = async () => {
+    try {
+      const order = await createOrder(eventData?.price!); // create order
+      
+      if (order?.success) {
+        const razorpayOptions = {
+          key: process.env.RAZORPAY_KEY!,
+          amount: order.amount , 
+          currency: 'INR',
+          order_id: order.order_ID,
+          handler: async (response:PaymentResponse ) => {
+            const data = {
+              orderCreationId: order.order_ID,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpaySignature: response.razorpay_signature,
+             };
+           const verify = await verifyPayment(data)
+           
+            
+          },
+          prefill: {
+            name: "kishan",
+            email: "kishan@example.com",
+            contact: "555555",
+          },
+        };
+  
+        const rzp = new (window as any).Razorpay(razorpayOptions);
+        rzp.open();
+      } else {
+        console.error('Razorpay SDK not loaded');
+      }
+    } catch (error) {
+      console.error('Error creating order', error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,18 +85,24 @@ function EventDetail({ params }: any) {
   if (!eventData) return <div>Loading...</div>;
 
   const handleSubmit = async () => {
-    const data = {
-      eventId: eventData?.id,
-      userId: session.data?.user?.id,
-      price: eventData?.price,
-      title: eventData.title,
-      location: eventData.location,
-    };
+     handlePayment()
+    
+      // fix the code about 
+      const data = {
+        eventId: eventData?.id,
+        userId: session.data?.user?.id,
+        price: eventData?.price,
+        title: eventData.title,
+        location: eventData.location,
+      };
+  
+      const result = await createBooking(data);
+      if (result?.success) {
+        setTicketId(result.ticketId)
+      }
+    
 
-    const result = await createBooking(data);
-    if (result?.success) {
-      setTicketId(result.ticketId)
-    }
+    
   };
   
   return (
@@ -77,6 +133,8 @@ function EventDetail({ params }: any) {
               {eventData?.title}
             </h1>
             <p className="text-white">{eventData?.description}</p>
+            <Script src='https://checkout.razorpay.com/v1/checkout.js'/>
+
             <button
               onClick={handleSubmit}
               className="mt-8 bg-blue-500 text-white px-4 py-2 rounded"
