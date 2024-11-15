@@ -40,13 +40,25 @@ function EventDetail({ params }: any) {
           currency: 'INR',
           order_id: order.order_ID,
           handler: async (response:PaymentResponse ) => {
-            const data = {
-              orderCreationId: order.order_ID,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpayOrderId: response.razorpay_order_id,
-              razorpaySignature: response.razorpay_signature,
-             };
-           const verify = await verifyPayment(data)
+            try {
+              // Verify the payment first
+              const data = {
+                orderCreationId: order.order_ID,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpaySignature: response.razorpay_signature,
+              };
+              const verify = await verifyPayment(data);
+  
+              if (verify.success) {
+                // Call handleSubmit only after successful payment verification
+                handleSubmit();
+              } else {
+                console.error('Payment verification failed.');
+              }
+            } catch (error) {
+              console.error('Error verifying payment:', error);
+            }
            
             
           },
@@ -84,9 +96,7 @@ function EventDetail({ params }: any) {
 
   if (!eventData) return <div>Loading...</div>;
 
-  const handleSubmit = async () => {
-     handlePayment()
-    
+  const handleSubmit = async () => { 
       // fix the code about 
       const data = {
         eventId: eventData?.id,
@@ -100,9 +110,7 @@ function EventDetail({ params }: any) {
       if (result?.success) {
         setTicketId(result.ticketId)
       }
-    
-
-    
+ 
   };
   
   return (
@@ -136,7 +144,7 @@ function EventDetail({ params }: any) {
             <Script src='https://checkout.razorpay.com/v1/checkout.js'/>
 
             <button
-              onClick={handleSubmit}
+              onClick={handlePayment}
               className="mt-8 bg-blue-500 text-white px-4 py-2 rounded"
               >
               Buy Tickets
