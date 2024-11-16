@@ -170,9 +170,7 @@ console.log(session)
 
  const handlePayment = async () => {
     try {
-      if (session.status == "unauthenticated" || session.status == "loading" ) {
-        router.push("/api/auth/signin")
-      }
+      
       const order = await createOrder(eventData?.price); // create order
       
       if (order?.success) {
@@ -240,7 +238,15 @@ console.log(session)
   };
 
   // check if user is loged in 
-
+const bookTicket = ()=>{
+  if (session.status == "unauthenticated" || session.status == "loading" ) {
+    router.push("/api/auth/signin")
+  }
+  else{
+    handlePayment()
+  }
+  
+}
 
   return (
     <div className="bg-gray-200">
@@ -272,7 +278,7 @@ console.log(session)
             <p className="text-white">{eventData?.description}</p>
 
             <button
-              onClick={handlePayment}
+              onClick={bookTicket}
               className="mt-8 bg-blue-500 text-white px-4 py-2 rounded"
             >
               Buy Tickets
