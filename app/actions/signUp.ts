@@ -1,6 +1,6 @@
 "use server";
 
-import bcrypt from "bcrypt"; // Assuming password hashing
+import bcrypt from "bcryptjs"; // Assuming password hashing
 import { prisma } from "../db";
 
 
