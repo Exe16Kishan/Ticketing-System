@@ -26,6 +26,7 @@ function EventDetail({ params }: any) {
   const [ticketId, setTicketId] = useState<string | null>(null);
 
   // api approach
+
   // const createOrderId = async () => {
   //   try {
   //     const response = await fetch("/api/order", {
@@ -166,7 +167,7 @@ function EventDetail({ params }: any) {
 
  const handlePayment = async () => {
     try {
-      const order = await createOrder(eventData?.price!); // create order
+      const order = await createOrder(eventData?.price); // create order
       
       if (order?.success) {
         const razorpayOptions = {
@@ -179,7 +180,7 @@ function EventDetail({ params }: any) {
             try {
               // Verify the payment first
               const data = {
-                orderCreationId: order.order_ID,
+                orderCreationId: order.order_ID || " ",
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpayOrderId: response.razorpay_order_id,
                 razorpaySignature: response.razorpay_signature,

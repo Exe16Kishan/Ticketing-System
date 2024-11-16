@@ -2,54 +2,90 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-const instance = new Razorpay({
-    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
-    key_secret: process.env.RAZORPAY_SECRET,
-});
 
-
-export const createOrder = async (amount: number) => {
-    const order = await instance.orders.create({
-        amount: amount *100,
-        currency: "INR",
-        receipt: 'rcp1',
-    })
-console.log(order)
-    return {success:true,order_ID:order.id,amount : order.amount}
-}
-
-
-// verify payment
-const generatedSignature = (OrderId: string, razorpayPaymentId: string) => {
-    const keySecret = process.env.RAZORPAY_SECRET;
-    if (!keySecret) {
-     throw new Error(
-      'Razorpay key secret is not defined in environment variables.'
-     );
-    }
-    const signature = crypto
-     .createHmac('sha256', keySecret)
-     .update(OrderId + '|' + razorpayPaymentId)
-     .digest('hex');
-    return signature;
-   };
-
-
-// algo to verify
-interface Data {
+ // Data interface for verification input
+ interface PaymentData {
     orderCreationId: string;
     razorpayPaymentId: string;
-    razorpayOrderId: string;
     razorpaySignature: string;
-}
-export const verifyPayment = async (data:Data) => {
-    const {orderCreationId,razorpaySignature,razorpayPaymentId}=data
-    const signature = generatedSignature(orderCreationId, razorpayPaymentId);
-    if (signature != razorpaySignature) {
-        return {success : false}
-    }
-    else{
-        return {success :true}
-    }
-}
+  }
 
+// Initialize Razorpay instance
+const Instance = new Razorpay({
+    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY!, 
+    key_secret: process.env.RAZORPAY_SECRET!,  
+  });
+  
+  // Server action to create an order
+  export const createOrder = async (amount: number) => {
+    try {
+      
+      const options = {
+        amount: amount * 100, 
+        currency: 'INR',      
+        receipt: 'rcp1',     
+      };
+  
+      // Creating order 
+      const order = await Instance.orders.create(options);
+  
+      // Log order details for debugging
+    //   console.log('Order created:', order);
+  
+      // Return success response 
+      return {
+        success: true,
+        order_ID: order.id,
+        amount: order.amount, 
+      };
+    } catch (error) {
+      console.error('Error creating Razorpay order:', error);
+  
+      // Return failure response
+      return {
+        success: false,
+        message: 'Failed to create Razorpay order',
+      };
+    }
+  };
+
+
+
+
+  
+// ********************* Verify signature ***************************
+
+// Helper to generate Razorpay signature
+const generatedSignature = (orderId: string, razorpayPaymentId: string) => {
+    const keySecret = process.env.RAZORPAY_SECRET;
+    if (!keySecret) {
+      throw new Error('Razorpay key secret is not defined in environment variables.');
+    }
+    const signature = crypto
+      .createHmac('sha256', keySecret)
+      .update(orderId + '|' + razorpayPaymentId)
+      .digest('hex');
+    return signature;
+  };
+  
+ 
+  
+  // Server action to verify payment
+  export const verifyPayment = async (data: PaymentData) => {
+    const { orderCreationId, razorpayPaymentId, razorpaySignature } = data;
+  
+    try {
+      // Generate server-side signature
+      const signature = generatedSignature(orderCreationId, razorpayPaymentId);
+  
+      // Compare the generated signature with the received one
+      if (signature !== razorpaySignature) {
+        return { success: false, message: 'Payment verification failed' };
+      }
+  
+      return { success: true, message: 'Payment verified successfully' };
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      return { success: false, message: 'Internal server error' };
+    }
+  };
