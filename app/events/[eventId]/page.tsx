@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Script from 'next/script'
 import { createOrder, verifyPayment } from "@/app/actions/payment";
 import { createBooking } from "@/app/actions/bookTicket";
 
@@ -28,56 +27,129 @@ function EventDetail({ params }: any) {
   const [eventData, setEventData] = useState<Event | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null)
 
-
-  const handlePayment = async () => {
+  const createOrderId = async () => {
     try {
-      const order = await createOrder(eventData?.price!); // create order
-      
-      if (order?.success) {
-        const razorpayOptions = {
-          key: process.env.RAZORPAY_KEY!,
-          amount: order.amount , 
-          currency: 'INR',
-          order_id: order.order_ID,
-          handler: async (response:PaymentResponse ) => {
-            try {
-              // Verify the payment first
-              const data = {
-                orderCreationId: order.order_ID,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpayOrderId: response.razorpay_order_id,
-                razorpaySignature: response.razorpay_signature,
-              };
-              const verify = await verifyPayment(data);
+     const response = await fetch('/api/order', {
+      method: 'POST',
+      headers: {
+       'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+       amount: eventData?.price! * 100,
+      }),
+     });
   
-              if (verify.success) {
-                // Call handleSubmit only after successful payment verification
-                handleSubmit();
-              } else {
-                console.error('Payment verification failed.');
-              }
-            } catch (error) {
-              console.error('Error verifying payment:', error);
-            }
+     if (!response.ok) {
+      throw new Error('Network response was not ok');
+     }
+  
+     const data = await response.json();
+     console.log(data.orderId)
+     return data.orderId;
+    } catch (error) {
+     console.error('There was a problem with your fetch operation:', error);
+    }
+   };
+
+   const processPayment = async () => {
+    try {
+     const orderId: string = await createOrderId();
+     const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+      amount: (eventData?.price!) * 100,
+      currency: "INR",
+      name: 'name',
+      description: 'description',
+      order_id: orderId,
+      handler: async function (response: any) {
+       const data = {
+        orderCreationId: orderId,
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpayOrderId: response.razorpay_order_id,
+        razorpaySignature: response.razorpay_signature,
+       };
+  
+       const result = await fetch('/api/verify', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+       });
+       const res = await result.json();
+       if (res.isOk) alert("payment succeed");
+       else {
+        alert(res.message);
+       }
+      },
+      prefill: {
+       name: "kishan",
+       email: "kishan@gmail.com",
+      },
+      theme: {
+       color: '#3399cc',
+      },
+     };
+     const paymentObject = new (window as any).Razorpay(options);
+     paymentObject.on('payment.failed', function (response: any) {
+      alert(response.error.description);
+     });
+     paymentObject.open();
+    } catch (error) {
+     console.log(error);
+    }
+   };
+
+
+
+  // const handlePayment = async () => {
+  //   try {
+  //     const order = await createOrder(eventData?.price!); // create order
+      
+  //     if (order?.success) {
+  //       const razorpayOptions = {
+  //         key: process.env.RAZORPAY_KEY!,
+  //         amount: order.amount , 
+  //         currency: 'INR',
+  //         order_id: order.order_ID,
+  //         handler: async (response:PaymentResponse ) => {
+  //           console.log(response)
+  //           try {
+  //             // Verify the payment first
+  //             const data = {
+  //               orderCreationId: order.order_ID,
+  //               razorpayPaymentId: response.razorpay_payment_id,
+  //               razorpayOrderId: response.razorpay_order_id,
+  //               razorpaySignature: response.razorpay_signature,
+  //             };
+  //             const verify = await verifyPayment(data);
+  
+  //             if (verify.success) {
+  //               // Call handleSubmit 
+  //               handleSubmit();
+  //             } else {
+  //               console.error('Payment verification failed.');
+  //             }
+  //           } catch (error) {
+  //             console.error('Error verifying payment:', error);
+  //           }
            
             
-          },
-          prefill: {
-            name: "kishan",
-            email: "kishan@example.com",
-            contact: "555555",
-          },
-        };
+  //         },
+  //         prefill: {
+  //           name: "kishan",
+  //           email: "kishan@example.com",
+  //           contact: "555555",
+  //         },
+  //       };
   
-        const rzp = new (window as any).Razorpay(razorpayOptions);
-        rzp.open();
-      } else {
-        console.error('Razorpay SDK not loaded');
-      }
-    } catch (error) {
-      console.error('Error creating order', error);
-    }
-  };
+  //       const rzp = new (window as any).Razorpay(razorpayOptions);
+  //       rzp.open();
+  //     } else {
+  //       console.error('Razorpay SDK not loaded');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error creating order', error);
+  //   }
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,22 +168,22 @@ function EventDetail({ params }: any) {
 
   if (!eventData) return <div>Loading...</div>;
 
-  const handleSubmit = async () => { 
-      // fix the code about 
-      const data = {
-        eventId: eventData?.id,
-        userId: session.data?.user?.id,
-        price: eventData?.price,
-        title: eventData.title,
-        location: eventData.location,
-      };
+  // const handleSubmit = async () => { 
+  //     // fix the code about 
+  //     const data = {
+  //       eventId: eventData?.id,
+  //       userId: session.data?.user?.id,
+  //       price: eventData?.price,
+  //       title: eventData.title,
+  //       location: eventData.location,
+  //     };
   
-      const result = await createBooking(data);
-      if (result?.success) {
-        setTicketId(result.ticketId)
-      }
+  //     const result = await createBooking(data);
+  //     if (result?.success) {
+  //       setTicketId(result.ticketId)
+  //     }
  
-  };
+  // };
   
   return (
     <div className="bg-gray-200">
@@ -141,10 +213,9 @@ function EventDetail({ params }: any) {
               {eventData?.title}
             </h1>
             <p className="text-white">{eventData?.description}</p>
-            <Script src='https://checkout.razorpay.com/v1/checkout.js'/>
 
             <button
-              onClick={handlePayment}
+              onClick={processPayment}
               className="mt-8 bg-blue-500 text-white px-4 py-2 rounded"
               >
               Buy Tickets
