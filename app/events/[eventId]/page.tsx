@@ -170,7 +170,7 @@ function EventDetail({ params }: any) {
       
       if (order?.success) {
         const razorpayOptions = {
-          key: process.env.RAZORPAY_KEY!,
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
           amount: order.amount , 
           currency: 'INR',
           order_id: order.order_ID,
