@@ -25,8 +25,9 @@ function EventDetail({ params }: any) {
   const [eventData, setEventData] = useState<Event | null>(null);
   const [ticketId, setTicketId] = useState<string | null>(null);
 
-  // api approach
+console.log(session)
 
+  // api approach
   // const createOrderId = async () => {
   //   try {
   //     const response = await fetch("/api/order", {
@@ -147,6 +148,8 @@ function EventDetail({ params }: any) {
   //     console.error('Error creating order', error);
   //   }
   // };
+    //***************************************************** */
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,6 +170,9 @@ function EventDetail({ params }: any) {
 
  const handlePayment = async () => {
     try {
+      if (session.status == "unauthenticated" || session.status == "loading" ) {
+        router.push("/api/auth/signin")
+      }
       const order = await createOrder(eventData?.price); // create order
       
       if (order?.success) {
@@ -233,6 +239,9 @@ function EventDetail({ params }: any) {
 
   };
 
+  // check if user is loged in 
+
+
   return (
     <div className="bg-gray-200">
       <div
@@ -251,7 +260,7 @@ function EventDetail({ params }: any) {
               src={"/event.jpg"}
               height={540}
               width={540}
-              alt="QR Code or Event Image"
+              alt=" Event Image"
             />
           </div>
 
