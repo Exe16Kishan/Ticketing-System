@@ -8,6 +8,7 @@ import FrequentlyAskedQuestion from "@/components/FrequentlyAskedQuestion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Event } from "@/types";
+import { TransactionStatus } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -170,29 +171,33 @@ console.log(session)
 
  const handlePayment = async () => {
     try {
-      
-      const order = await createOrder(eventData?.price); // create order
+      const data = {
+        eventId : eventData.id,
+        userId : session.data?.user?.id ??"",
+        amount : eventData.price
+      }
+      const order = await createOrder(data); // create order
       
       if (order?.success) {
         const razorpayOptions = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY!,
           amount: order.amount , 
           currency: 'INR',
-          order_id: order.order_ID,
+          order_id: order.order_ID!,
           handler: async (response:PaymentResponse ) => {
             console.log(response)
             try {
               // Verify the payment first
               const data = {
-                orderCreationId: order.order_ID || " ",
+                orderCreationId: order.order_ID!,
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpayOrderId: response.razorpay_order_id,
                 razorpaySignature: response.razorpay_signature,
+                transactionId:order.transactionId!
               };
               const verify = await verifyPayment(data);
   
               if (verify.success) {
-                // Call handleSubmit 
                 handleSubmit();
               } else {
                 console.error('Payment verification failed.');
@@ -204,9 +209,9 @@ console.log(session)
             
           },
           prefill: {
-            name: "kishan",
-            email: "kishan@example.com",
-            contact: "555555",
+            name: session.data?.user?.name,
+            email: session.data?.user?.email,
+            
           },
         };
   

@@ -54,21 +54,22 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   password      String
   role          UserRole?
-  events        Event[]   @relation("OrganizerEvents")
-  tickets       Ticket[]  @relation("UserTickets")
+  events        Event[]       @relation("OrganizerEvents")
+  tickets       Ticket[]      @relation("UserTickets")
   reviews       Review[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  // Payout        Payout[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  Transaction   Transaction[]
+  Payout        Payout[]
 
   @@map("user")
 }
@@ -102,32 +103,39 @@ model Ticket {
   eventId       String
   user          User?        @relation("UserTickets", fields: [userId], references: [id])
   userId        String?
-  // transaction   Transaction  @relation(fields: [transactionId], references: [id])
-  // transactionId String
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  Transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId String?
 }
 
-// model Transaction {
-//   id             String   @id @default(cuid())
-//   paymentDetails String
-//   stripeInfo     String
-//   // ticket         Ticket[]
-//   createdAt      DateTime @default(now())
-//   updatedAt      DateTime @updatedAt
-//   Payout         Payout[]
-// }
+model Transaction {
+  id            String            @id @default(cuid())
+  paymentId     String  // Razorpay payment ID for tracking
+  orderId       String  // Razorpay order ID for payment linking
+  signature     String  // Razorpay signature for security validation
+  amount        Float   // Total amount paid
+  currency      String            @default("INR") // Currency of the transaction
+  status        TransactionStatus @default(PENDING)
+  user          User              @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
-// model Payout {
-//   id            String      @id @default(cuid())
-//   organizer     User        @relation(fields: [organizerId], references: [id])
-//   organizerId   String
-//   amount        Float
-//   transaction   Transaction @relation(fields: [transactionId], references: [id])
-//   transactionId String
-//   createdAt     DateTime    @default(now())
-//   updatedAt     DateTime    @updatedAt
-// }
+  tickets Ticket[]
+  Payout  Payout[]
+}
+
+model Payout {
+  id            String      @id @default(cuid())
+  organizer     User        @relation(fields: [organizerId], references: [id])
+  organizerId   String
+  amount        Float // Payout amount to the organizer
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String // Transaction linked to the payout
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
 
 model Review {
   id        String   @id @default(cuid())
@@ -157,6 +165,13 @@ enum UserRole {
   ORGANIZER
   ATTENDEE
   ADMIN
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
 }
 
 // ticket status

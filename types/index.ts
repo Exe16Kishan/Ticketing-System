@@ -18,6 +18,7 @@ export interface Event {
     occupation: string;
     image: string | null;
   }[]
+  
   createdAt: Date;
   updatedAt: Date;
 }
