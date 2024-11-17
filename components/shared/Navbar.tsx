@@ -10,20 +10,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { TicketIcon } from "lucide-react"
+
 
 const Navbar = () => {
   const { data: session, status } = useSession();
+  
 
   return (
     <div className="bg-white shadow-md">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16 px-4 sm:px-6 lg:px-8">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold">
-            <span className="text-[#2f4cf3]">Book Event</span>
-          </h1>
+        <div >
+            <Link href="/"><img src="/image.png" className="object-contain h-44 w-44"/></Link>       
         </div>
         <div className="flex items-center gap-6 lg:gap-12">
-          <ul className="hidden sm:flex font-medium items-center gap-4 lg:gap-5">
+          <ul className="hidden sm:flex  font-semibold items-center gap-4 lg:gap-5">
             <li>
               <Link href="/">Home</Link>
             </li>
@@ -53,8 +54,8 @@ const Navbar = () => {
             // Display the user's profile popover
             <Popover>
               <PopoverTrigger>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage
+                <Avatar className="cursor-pointer h-12 w-12">
+                  <AvatarImage 
                     src={session.user?.image || "https://github.com/shadcn.png"}
                   />
                   <AvatarFallback>
@@ -80,9 +81,9 @@ const Navbar = () => {
                 </div>
                 <div className="flex flex-col text-gray-500 my-2">
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
-                    <User />
+                    <TicketIcon />
                     <Button variant="link">
-                      <Link href="/profile">View Profile</Link>
+                      <Link href={`/ticket/user/${session.user?.id}`}>Bookings</Link>
                     </Button>
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">

@@ -6,6 +6,7 @@ import { FaFacebook } from "react-icons/fa";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ForwardIcon } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -13,8 +14,8 @@ const Footer = () => {
       <Separator />
       <div style={{ justifyContent: "space-between" }} className="flex flex-col lg:flex-row justify-center pt-6 gap-y-8 lg:gap-y-0 lg:gap-x-6 text-center lg:text-left">
         {/* Logo Section */}
-        <div className="logo my-auto">
-          <span className="text-4xl font-bold text-blue-500">Book Event</span>
+        <div >
+            <Link href="/"><img src="/image.png" className="object-contain h-52 w-52"/></Link>       
         </div>
 
         {/* Information Section */}

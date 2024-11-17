@@ -57,7 +57,7 @@ console.log("booking  "+booking)
         user:{
           select:{
             name:true,
-
+            email:true
           }
         },
 
@@ -68,7 +68,33 @@ console.log("booking  "+booking)
     eventTitle: ticket?.event.title ,
     date:ticket?.event.date,
     location: ticket?.event.location,
+    name:ticket?.user?.name,
+    email:ticket?.user?.email
   };
   const qrCodeUrl = await generateQRCode(qrData);
     return {success:true, ticket,qrCodeUrl}
+  }
+
+
+  export const allTicket =async (id:string) => {
+    console.log(id)
+    const tickets = await prisma.ticket.findMany({
+      where:{
+        userId:id
+      },
+      select:{
+        id:true,
+        event:{
+          select:{
+            title:true,
+            location:true,
+            date:true
+          }
+        }
+      }
+     
+    }
+  )
+  console.log(tickets)
+    return {success : true , tickets}
   }
