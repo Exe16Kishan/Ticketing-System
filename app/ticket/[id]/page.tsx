@@ -95,7 +95,7 @@ export default function TicketPage({ params }:any ) {
           <Badge variant="secondary" className="text-sm">
             Quest
           </Badge>
-          <span className="text-lg font-semibold">{ticketData.event.price}</span>
+          <span className="text-lg font-semibold">Rs {ticketData.event.price}</span>
         </CardFooter>
       </Card>
       <div className="mt-6 space-x-4">
